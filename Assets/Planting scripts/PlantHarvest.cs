@@ -5,16 +5,22 @@ using UnityEngine;
 public class PlantHarvest : MonoBehaviour
 {
     private bool playerInRange = false;
-    private float harvestHoldTime = 2f; // Seconds to hold E
+    private float harvestHoldTime = 2f;
     private float holdTimer = 0f;
 
     private PlantData plantData;
-
-    [SerializeField] private HarvestUIManager uiManager; // Assign your UI manager in inspector
+    private HarvestUIManager uiManager;
 
     void Start()
     {
         plantData = GetComponent<PlantData>();
+        uiManager = FindObjectOfType<HarvestUIManager>();
+
+        if (uiManager == null)
+        {
+            Debug.LogError("No HarvestUIManager found in scene!");
+        }
+
         if (plantData == null)
         {
             Debug.LogWarning("PlantData component missing on plant.");
@@ -64,11 +70,11 @@ public class PlantHarvest : MonoBehaviour
     {
         Debug.Log("Plant harvested!");
 
-        var (seedAmount, seedName) = plantData.OnHarvest();
+        var (seedAmount, seedType) = plantData.OnHarvest();
 
         if (uiManager != null)
         {
-            uiManager.UpdateHarvestText(seedAmount, seedName);
+            uiManager.UpdateHarvestText(seedAmount, seedType);
         }
     }
 }

@@ -7,31 +7,26 @@ public class HarvestUIManager : MonoBehaviour
     [System.Serializable]
     public class SeedUIEntry
     {
-        public string seedName;   // e.g. "Apple Seed"
-        public Text seedAmountText;  // The UI Text to show amount for this seed
-        public int currentAmount = 0; // Track the total amount harvested for this seed
+        public SeedType seedType;
+        public Text seedAmountText;
+        public int currentAmount = 0;
     }
 
-    [Tooltip("Assign each seed type and its corresponding UI Text")]
     public List<SeedUIEntry> seedEntries;
 
-    /// <summary>
-    /// Call this when a plant is harvested to update the correct seed text
-    /// </summary>
-    /// <param name="amount">Number of seeds given</param>
-    /// <param name="seedName">Seed type name (must match seedEntries.seedName exactly)</param>
-    public void UpdateHarvestText(int amount, string seedName)
+    public void UpdateHarvestText(int amount, SeedType seedType)
     {
-        SeedUIEntry entry = seedEntries.Find(e => e.seedName == seedName);
+        SeedUIEntry entry = seedEntries.Find(e => e.seedType == seedType);
         if (entry != null)
         {
             entry.currentAmount += amount;
-            // Show: "Apple Seeds: 4"
-            entry.seedAmountText.text = $"{entry.seedName}: {entry.currentAmount}";
+
+            // Build the full text every time (Label + Amount)
+            entry.seedAmountText.text = $"{seedType} Seeds: {entry.currentAmount}";
         }
         else
         {
-            Debug.LogWarning($"HarvestUIManager: No UI entry found for seed name '{seedName}'");
+            Debug.LogWarning($"No UI entry found for seed type '{seedType}'");
         }
     }
 }

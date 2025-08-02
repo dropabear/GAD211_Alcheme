@@ -8,26 +8,24 @@ public class PlantData : MonoBehaviour
     public string plantName = "Default Plant";
 
     [Header("Seed Settings")]
-    public string seedName = "Default Seed";  // e.g. "Apple Seed"
+    public SeedType seedType;
 
     [Header("Harvest Settings")]
     public int minSeeds = 1;
     public int maxSeeds = 3;
 
     [Range(0f, 100f)]
-    public float survivalChance = 25f; // % chance plant does NOT get destroyed after harvesting
+    public float survivalChance = 25f;
 
-    // Return a tuple with seed amount and seed name to update UI
-    public (int, string) OnHarvest()
+    public (int, SeedType) OnHarvest()
     {
         int seedsGiven = Random.Range(minSeeds, maxSeeds + 1);
-        Debug.Log($"{plantName} gave {seedsGiven} {seedName}(s)!");
+        Debug.Log($"{plantName} gave {seedsGiven} {seedType} seeds!");
 
         float roll = Random.Range(0f, 100f);
         if (roll <= survivalChance)
         {
             Debug.Log($"{plantName} survived after harvesting!");
-            // Optional: play regrow animation or leave as is.
         }
         else
         {
@@ -35,6 +33,6 @@ public class PlantData : MonoBehaviour
             Destroy(gameObject);
         }
 
-        return (seedsGiven, seedName);
+        return (seedsGiven, seedType);
     }
 }
