@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 5994658504914302970}
   - component: {fileID: 6902831038882998827}
   - component: {fileID: 626086482172962717}
+  - component: {fileID: -1621707042335692535}
+  - component: {fileID: 7501300114162456935}
   m_Layer: 0
   m_Name: Plot
   m_TagString: Untagged
@@ -106,3 +108,39 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5976822287405820870, guid: f30ca8ed24230ab4ab92bf3d6751ae22, type: 3}
+--- !u!114 &-1621707042335692535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6410555198557548148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a700c0a1b34f5540ba6235ea8cb23d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isOccupied: 0
+  seedlingSpawnPoint: {fileID: 8255798794287512417, guid: 4046727445ad0214796746357ebff56e, type: 3}
+  seedlingPrefab: {fileID: 3582015247612996935, guid: 4046727445ad0214796746357ebff56e, type: 3}
+--- !u!65 &7501300114162456935
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6410555198557548148}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.99999994, y: 2.5402272, z: 1}
+  m_Center: {x: 0, y: 0.77011454, z: 0.0000000019833375}
