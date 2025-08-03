@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5168327785204168386}
   - component: {fileID: 71001415821274151}
   m_Layer: 0
-  m_Name: Tomatoe
+  m_Name: Aloe Vera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9d0a10c16e92f3b4d8d19f8117eb1b30, type: 2}
+  - {fileID: 2100000, guid: 6d3d165acaf99fc4fb9e26909d5fef32, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -155,11 +155,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96d305ffc2889e04d81fbab22bddd016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plantName: Tomato
-  seedType: 2
+  plantName: Aloe Vera
+  seedType: 4
   minSeeds: 1
-  maxSeeds: 3
-  survivalChance: 52.2
+  maxSeeds: 5
+  survivalChance: 29.1
   harvestSuccessSound: {fileID: 8300000, guid: dfbc2911505cdec4fa18516c046c648f, type: 3}
   plantDestroyedSound: {fileID: 8300000, guid: 8b1805e3a669d0d47a098431edca3138, type: 3}
 --- !u!82 &71001415821274151
