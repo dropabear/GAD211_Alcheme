@@ -1,22 +1,34 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SeedSelectionUI : MonoBehaviour
 {
-    public TMP_Text seedNameText; // Assign via Inspector
-    private SeedType seedType;
-    private PlotPlantingUI ui;
+    public SeedType seedType; // This button represents this seed type
+    public Image highlightImage; // UI Image that acts as a highlight/border
 
-    public void Initialize(SeedType type, PlotPlantingUI plantingUI)
+    private SeedInventoryManager inventoryManager;
+
+    void Start()
     {
-        seedType = type;
-        ui = plantingUI;
-        seedNameText.text = type.ToString();
+        inventoryManager = FindObjectOfType<SeedInventoryManager>();
+
+        if (highlightImage != null)
+            highlightImage.enabled = false; // Turn off highlight by default
     }
 
-    public void OnClick()
+    public void OnSelectSeed()
     {
-        ui.OnSeedButtonClicked(seedType);
+        if (inventoryManager != null)
+        {
+            inventoryManager.SelectSeed(seedType);
+            inventoryManager.UpdateSelectionUI(this);
+        }
+    }
+
+    // This will be called by the manager to turn highlight on/off
+    public void SetHighlight(bool active)
+    {
+        if (highlightImage != null)
+            highlightImage.enabled = active;
     }
 }

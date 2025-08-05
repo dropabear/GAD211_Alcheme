@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Seedling : MonoBehaviour
+[System.Serializable]
+public class SeedEntry
 {
     public SeedType seedType;
-
-    // Growth script will go here later
+    public int seedCount;
 }
-

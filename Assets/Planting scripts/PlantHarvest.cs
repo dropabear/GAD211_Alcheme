@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlantHarvest : MonoBehaviour
 {
+    private bool playerInRange = false;
     private float harvestHoldTime = 2f;
     private float holdTimer = 0f;
 
@@ -26,31 +27,43 @@ public class PlantHarvest : MonoBehaviour
         }
     }
 
-    // Called externally when looking at this plant and holding E
-    public bool TryHarvesting()
+    void Update()
     {
-        if (plantData == null)
-            return false;
-
-        if (Input.GetKey(KeyCode.E))
+        if (playerInRange && plantData != null)
         {
-            holdTimer += Time.deltaTime;
-            
-
-            if (holdTimer >= harvestHoldTime)
+            if (Input.GetKey(KeyCode.E))
             {
-                Debug.Log("harvesting");
-                HarvestPlant();
+                holdTimer += Time.deltaTime;
+                if (holdTimer >= harvestHoldTime)
+                {
+                    HarvestPlant();
+                    holdTimer = 0f;
+                }
+            }
+            else
+            {
                 holdTimer = 0f;
-                return true;
             }
         }
-        else
-        {
-            holdTimer = 0f;
-        }
+    }
 
-        return false;
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = true;
+            Debug.Log("Player in range of plant.");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = false;
+            holdTimer = 0f;
+            Debug.Log("Player left plant range.");
+        }
     }
 
     private void HarvestPlant()
@@ -59,36 +72,9 @@ public class PlantHarvest : MonoBehaviour
 
         var (seedAmount, seedType) = plantData.OnHarvest();
 
-        // 1. Update UI
         if (uiManager != null)
         {
             uiManager.UpdateHarvestText(seedAmount, seedType);
-        }
-
-        // 2. Add seeds to inventory
-        var inventory = SeedInventoryManager.Instance;
-        if (inventory != null)
-        {
-            var entry = inventory.seedInventory.Find(e => e.seedType == seedType);
-            if (entry != null)
-            {
-                entry.count += seedAmount;
-            }
-            else
-            {
-                // First time collecting this seed type
-                inventory.seedInventory.Add(new SeedEntry
-                {
-                    seedType = seedType,
-                    count = seedAmount
-                });
-            }
-
-            Debug.Log($"Added {seedAmount} {seedType} seeds to inventory.");
-        }
-        else
-        {
-            Debug.LogError("SeedInventoryManager.Instance is null!");
         }
     }
 }
