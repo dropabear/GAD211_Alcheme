@@ -4,8 +4,25 @@ using UnityEngine;
 
 public class Seedling : MonoBehaviour
 {
-    public SeedType seedType;
+    public float growthDuration = 60f;
+    private float timer = 0f;
+    private bool isGrowing = true;
 
-    // Growth script will go here later
+    void Update()
+    {
+        if (!isGrowing) return;
+
+        timer += Time.deltaTime;
+        if (timer >= growthDuration)
+        {
+            GrowToMature();
+        }
+    }
+
+    void GrowToMature()
+    {
+        isGrowing = false;
+        // Replace this object with a mature plant prefab if needed
+    }
 }
 

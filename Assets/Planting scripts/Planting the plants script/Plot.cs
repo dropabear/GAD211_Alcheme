@@ -1,53 +1,92 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Plot : MonoBehaviour
 {
-    public bool isOccupied = false;
-    public Transform seedlingSpawnPoint;
-    public GameObject seedlingPrefab;
+    [SerializeField] public GameObject plantingMenuUI;
 
-    private SeedInventoryManager seedInventory;
+    public bool isPlanted = false;
+    public PlotPlantingUI plantingUI;
+    public GameObject MenuPanel;
 
-    void Start()
+    public void Setup(GameObject menuUI)
     {
-        seedInventory = FindObjectOfType<SeedInventoryManager>();
-    }
-
-    private void OnMouseDown()
-    {
-        if (isOccupied)
+        if (menuUI == null)
         {
-            Debug.Log("This plot is already occupied.");
+            Debug.LogError("Menu UI reference is null! Cannot initialize Plot.");
             return;
         }
 
-        if (!seedInventory.HasSeed(seedInventory.selectedSeed))
+        plantingMenuUI = menuUI;
+        plantingUI = plantingMenuUI.GetComponent<PlotPlantingUI>();
+        if (plantingUI == null)
         {
-            Debug.Log("No seeds available for planting!");
+            Debug.LogError("PlotPlantingUI component missing on provided menuUI GameObject!");
             return;
         }
 
-        bool planted = seedInventory.UseSeed(seedInventory.selectedSeed);
-        if (planted)
+        plantingMenuUI.SetActive(false);
+    }
+
+    public void PlantingMenu()
+    {
+        Debug.Log("Test");
+
+        if (isPlanted || plantingMenuUI == null || plantingUI == null)
         {
-            PlantSeed();
+            Debug.Log("Conditions failed: isPlanted = " + isPlanted + ", plantingMenuUI = " + plantingMenuUI + ", plantingUI = " + plantingUI);
+            return;
+        }
+
+        if (plantingMenuUI.activeSelf)
+        {
+            Debug.Log("Menu is already open.");
+            return;
+        }
+
+        Debug.Log("Activating menu...");
+        plantingMenuUI.SetActive(true);
+        plantingUI.Initialize(this);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void PlantSeed(SeedType seedType)
+    {
+        if (isPlanted) return;
+
+        var seedInventory = SeedInventoryManager.Instance ?? FindObjectOfType<SeedInventoryManager>();
+        if (seedInventory == null)
+        {
+            Debug.LogError("SeedInventoryManager not found!");
+            return;
+        }
+
+        GameObject prefab = seedInventory.GetSeedlingPrefab(seedType);
+        if (prefab == null)
+        {
+            Debug.LogWarning($"No seedling prefab found for seed type {seedType}");
+            return;
+        }
+
+        Instantiate(prefab, transform.position + Vector3.up * 0.1f, Quaternion.identity);
+        isPlanted = true;
+
+        plantingMenuUI.SetActive(false);
+    }
+
+    public void CloseMenu()
+    {
+        if (plantingMenuUI != null && plantingMenuUI.activeSelf)
+        {
+            plantingMenuUI.SetActive(false);
         }
     }
 
-    private void PlantSeed()
+    public void SetPlantingMenuUI(GameObject ui)
     {
-        Debug.Log($"Planting {seedInventory.selectedSeed} in plot at {transform.position}");
-
-        GameObject seedling = Instantiate(seedlingPrefab, seedlingSpawnPoint.position, Quaternion.identity);
-
-        Seedling seedlingScript = seedling.GetComponent<Seedling>();
-        if (seedlingScript != null)
-        {
-            seedlingScript.seedType = seedInventory.selectedSeed;
-        }
-
-        isOccupied = true;
+        plantingMenuUI = ui;
     }
 }

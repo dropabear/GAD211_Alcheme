@@ -9,6 +9,9 @@ public class PlayerDigPlot : MonoBehaviour
     public float digDistance = 2.5f; // Max distance from player to dig
     public GameObject plotPrefab;
 
+    [Header("UI")]
+    public GameObject plantingMenuUI; // Assign this via Inspector in Player object
+
     public float holdTimer = 0f;
     private Camera mainCamera;
 
@@ -19,6 +22,8 @@ public class PlayerDigPlot : MonoBehaviour
         {
             Debug.LogError("No Main Camera found in the scene!");
         }
+
+        
     }
 
     void Update()
@@ -45,7 +50,19 @@ public class PlayerDigPlot : MonoBehaviour
                         if (holdTimer >= digHoldTime)
                         {
                             Debug.Log("Digging Successful! Creating Plot.");
-                            Instantiate(plotPrefab, hit.point, Quaternion.identity);
+                            GameObject newPlot = Instantiate(plotPrefab, hit.point, Quaternion.identity);
+
+                            // Assign planting menu UI to the Plot script
+                            Plot plotScript = newPlot.GetComponent<Plot>();
+                            if (plotScript != null)
+                            {
+                                plotScript.SetPlantingMenuUI(plantingMenuUI); // You must create this method
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Instantiated plot does not have a Plot script!");
+                            }
+
                             holdTimer = 0f; // Reset after dig
                         }
                     }
