@@ -17,7 +17,7 @@ MonoBehaviour:
     brushes:
     - name: PP_Grass_11
       settings:
-        brushRadius: 10
+        brushRadius: 1.9
         brushSpacing: 1
         brushOverlapCheckMode: 0
         brushOverlapDistance: 0.5
