@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 626086482172962717}
   - component: {fileID: -1621707042335692535}
   - component: {fileID: 7501300114162456935}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,9 +120,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a700c0a1b34f5540ba6235ea8cb23d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isOccupied: 0
-  seedlingSpawnPoint: {fileID: 8255798794287512417, guid: 4046727445ad0214796746357ebff56e, type: 3}
-  seedlingPrefab: {fileID: 3582015247612996935, guid: 4046727445ad0214796746357ebff56e, type: 3}
+  plantingMenuUI: {fileID: 0}
+  isPlanted: 0
+  plantingUI: {fileID: 0}
+  MenuPanel: {fileID: 0}
 --- !u!65 &7501300114162456935
 BoxCollider:
   m_ObjectHideFlags: 0

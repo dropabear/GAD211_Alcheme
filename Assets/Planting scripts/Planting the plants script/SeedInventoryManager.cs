@@ -1,58 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static HarvestUIManager;
 
 public class SeedInventoryManager : MonoBehaviour
 {
-    public List<SeedEntry> seeds = new List<SeedEntry>();
-    public SeedType selectedSeed;
+    public static SeedInventoryManager Instance { get; private set; }
 
-    private HarvestUIManager uiManager;
-    private SeedSelectionUI currentSelectedUI;
+    public List<SeedEntry> seedInventory = new List<SeedEntry>();
+    public List<SeedTypeToPrefab> seedPrefabs;
 
-    void Start()
+    void Awake()
     {
-        uiManager = FindObjectOfType<HarvestUIManager>();
+        Instance = this;
     }
 
-    public void SelectSeed(SeedType seed)
+    public bool UseSeed(SeedType type)
     {
-        selectedSeed = seed;
-        Debug.Log($"Selected seed: {selectedSeed}");
-    }
-
-    public void UpdateSelectionUI(SeedSelectionUI newSelection)
-    {
-        if (currentSelectedUI != null)
+        var entry = seedInventory.Find(e => e.seedType == type);
+        if (entry != null && entry.count > 0)
         {
-            currentSelectedUI.SetHighlight(false);
-        }
-
-        currentSelectedUI = newSelection;
-        currentSelectedUI.SetHighlight(true);
-    }
-
-    public bool HasSeed(SeedType seed)
-    {
-        SeedEntry entry = seeds.Find(e => e.seedType == seed);
-        return entry != null && entry.seedCount > 0;
-    }
-
-    public bool UseSeed(SeedType seed)
-    {
-        SeedEntry entry = seeds.Find(e => e.seedType == seed);
-        if (entry != null && entry.seedCount > 0)
-        {
-            entry.seedCount--;
-            Debug.Log($"{seed} seed used. Remaining: {entry.seedCount}");
-
-            if (uiManager != null)
-            {
-                uiManager.UpdateHarvestText(-1, seed);
-            }
+            entry.count--;
             return true;
         }
-        Debug.Log($"No {seed} seeds left to plant!");
         return false;
     }
+
+    public GameObject GetSeedlingPrefab(SeedType type)
+    {
+        return seedPrefabs.FirstOrDefault(p => p.seedType == type)?.prefab;
+    }
+}
+
+[System.Serializable]
+public class SeedEntry
+{
+    public SeedType seedType;
+    public int count;
+}
+
+[System.Serializable]
+public class SeedTypeToPrefab
+{
+    public SeedType seedType;
+    public GameObject prefab;
 }
