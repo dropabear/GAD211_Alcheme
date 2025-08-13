@@ -5,10 +5,10 @@ using UnityEngine;
 public class CharacterControllerScript : MonoBehaviour
 {
     public float speed = 12f;
-    public float speedH = 2.0f;
-    public float speedV = 2.0f;
-    public float yaw = 0.0f;
-    public float pitch = 0.0f;
+    public float speedH = 2.0f; // (Unused now for yaw rotation, but left in case you re-add mouse X/Y rotation later)
+    public float speedV = 2.0f; // (Unused now for yaw rotation, but left in case you re-add mouse X/Y rotation later)
+    public float yaw = 0.0f;    // (Unused now for yaw rotation)
+    public float pitch = 0.0f;  // (Unused now for yaw rotation)
 
     public CharacterController controller;
     private Vector3 velocity;
@@ -18,6 +18,9 @@ public class CharacterControllerScript : MonoBehaviour
     private bool isGrounded;
     public float jumpHeight = 2f;
 
+    // New variables for mouse look at cursor
+    public Camera mainCamera; // Drag your camera here in the Inspector
+
     void Start()
     {
         // If the variable "controller" is empty...
@@ -26,14 +29,17 @@ public class CharacterControllerScript : MonoBehaviour
             // ...then this searches the components on the gameobject and gets a reference to the CharacterController class
             controller = GetComponent<CharacterController>();
         }
+
+        // If the variable "mainCamera" is empty...
+        if (mainCamera == null)
+        {
+            // ...then this searches for the main camera in the scene
+            mainCamera = Camera.main;
+        }
     }
 
     void Update()
     {
-        // These lines let the script rotate the player based on the mouse moving
-        yaw += speedH * Input.GetAxis("Mouse X");
-        pitch -= speedV * Input.GetAxis("Mouse Y");
-
         // Get the Left/Right and Forward/Back values of the input being used (WASD, Joystick etc.)
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
@@ -44,8 +50,33 @@ public class CharacterControllerScript : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
         }
 
-        // Rotate the player based off those mouse values we collected earlier
-        transform.eulerAngles = new Vector3(0.0f, yaw, 0.0f);
+        // --- New: Rotate the player to look at the mouse position ---
+        // Cast a ray from the mouse position into the world
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        // Create a plane at y = 0 (ground level) for the ray to intersect
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        float rayLength;
+
+        // If the ray hits the plane...
+        if (groundPlane.Raycast(ray, out rayLength))
+        {
+            // Get the point where the ray hit the plane
+            Vector3 pointToLook = ray.GetPoint(rayLength);
+
+            // Find the direction from the player to that point
+            Vector3 direction = pointToLook - transform.position;
+
+            // Keep only the horizontal direction (no vertical tilt)
+            direction.y = 0;
+
+            // Apply the rotation if the direction is valid
+            if (direction != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(direction);
+            }
+        }
+        // ------------------------------------------------------------
 
         // This is stealing the data about the player being on the ground from the character controller
         isGrounded = controller.isGrounded;
