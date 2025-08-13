@@ -21,6 +21,9 @@ public class CharacterControllerScript : MonoBehaviour
     // New variables for mouse look at cursor
     public Camera mainCamera; // Drag your camera here in the Inspector
 
+    // New variable for animations
+    private Animator animator;
+
     void Start()
     {
         // If the variable "controller" is empty...
@@ -36,6 +39,9 @@ public class CharacterControllerScript : MonoBehaviour
             // ...then this searches for the main camera in the scene
             mainCamera = Camera.main;
         }
+
+        // Get Animator component
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -44,6 +50,10 @@ public class CharacterControllerScript : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+        // Determine if the player is walking
+        bool isWalking = (x != 0 || z != 0);
+        animator.SetBool("IsWalking", isWalking);
+
         // Let the player jump if they are on the ground and they press the jump button
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
@@ -51,26 +61,16 @@ public class CharacterControllerScript : MonoBehaviour
         }
 
         // --- New: Rotate the player to look at the mouse position ---
-        // Cast a ray from the mouse position into the world
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        // Create a plane at y = 0 (ground level) for the ray to intersect
         Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
         float rayLength;
 
-        // If the ray hits the plane...
         if (groundPlane.Raycast(ray, out rayLength))
         {
-            // Get the point where the ray hit the plane
             Vector3 pointToLook = ray.GetPoint(rayLength);
-
-            // Find the direction from the player to that point
             Vector3 direction = pointToLook - transform.position;
-
-            // Keep only the horizontal direction (no vertical tilt)
             direction.y = 0;
 
-            // Apply the rotation if the direction is valid
             if (direction != Vector3.zero)
             {
                 transform.rotation = Quaternion.LookRotation(direction);
